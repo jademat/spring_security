@@ -21,12 +21,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain FilterChain(HttpSecurity http, HttpServlet httpServlet, HttpServletResponse httpServletResponse) throws Exception {
         http
-                .csrf().disable()                                   // CSRF 필터 끔
-                .authorizeHttpRequests()                            // URL 기반 인가 설정
+                .csrf().disable()                                                   // CSRF 필터 끔
+                .authorizeHttpRequests()                                            // URL 기반 인가 설정
                     .antMatchers("/user/**").hasRole("USER")
                     .antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/logout").authenticated()      // 인증 받은 사용자만 접근 가능
-                    .antMatchers("/**").permitAll()              // 인증/인가 여부와 상관 없이 접근 가능
+                .antMatchers("/logout").authenticated()                          // 인증 받은 사용자만 접근 가능
+                .antMatchers("/**").permitAll()                                 // 인증/인가 여부와 상관 없이 접근 가능
                 .and()
                     .logout()    // 로그아웃 설정
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -52,7 +52,7 @@ public class SecurityConfig {
         UserDetails admin = User.withDefaultPasswordEncoder()
                 .username("admin")
                 .password("password")
-                .roles("ADMIN")
+                .roles("ADMIN","USER")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
     }
