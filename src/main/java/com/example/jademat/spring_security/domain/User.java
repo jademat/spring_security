@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users2")
+@Table(name = "users3")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +28,10 @@ public class User {
     private String name;
     @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private String role;
+
 
     // insert, update 시 해당컬럼 제외
     @CreationTimestamp
