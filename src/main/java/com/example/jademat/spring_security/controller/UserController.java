@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String loginok(@RequestParam String userid, @RequestParam String passwd,
-                                HttpServletResponse res) {
+                          HttpServletResponse res) {
 
         log.info(">> /member/login 호출 ");
 
@@ -65,13 +67,30 @@ public class UserController {
         String returnUrl = "redirect:/member/login";
 
         // 로그인 인증이 성공했다면
-        if(authentication != null && authentication.isAuthenticated()){
+        if (authentication != null && authentication.isAuthenticated()) {
             // 인증 완료된 사용자 정보를 가져옴
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             model.addAttribute("user", userDetails);
             returnUrl = "views/myinfo";
         }
         //return returnUrl;
-        return "views/myinfo";
+        return returnUrl;
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest req, HttpServletResponse res) {
+        // 쿠키에서 JWT 삭제
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        res.addCookie(cookie);
+
+        // 세션 무효화
+
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/";
     }
 }
